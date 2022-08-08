@@ -28,6 +28,6 @@ class RegisterMail extends Mailable
      */
     public function build()
     {
-        return $this->from(env('MAIL_USERNAME'), 'JAPHOE')->subject('A letter from JAPHOE.')->view('mail.content', ['email_data' => $this->email_data]);
+        return $this->from(env('MAIL_USERNAME'), 'JAPHOE')->subject('Welcome to our website.')->view('mail.content', ['email_data' => $this->email_data]);
     }
 }
