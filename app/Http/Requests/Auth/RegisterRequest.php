@@ -63,7 +63,6 @@ class RegisterRequest extends FormRequest
                 DB::beginTransaction();
 
                 try {
-                
                     $user = new User();
                     $user->name = $this->name;
                     $user->email = $this->email;
@@ -76,7 +75,6 @@ class RegisterRequest extends FormRequest
                     DB::commit();
                     
                     event(new Registered($data));
-
                 }catch (Exception $e){
                     DB::rollback();
 
