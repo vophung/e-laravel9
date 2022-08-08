@@ -29,7 +29,7 @@ class SendMailJob implements ShouldQueue
     {
         $this->data = $data;
         $this->queue = 'sendmail';
-        $this->delay = now()->addMinute();
+        $this->delay = now()->addMinutes(1);
     }
 
     /**
@@ -39,6 +39,6 @@ class SendMailJob implements ShouldQueue
      */
     public function handle()
     {
-        MailController::sendRegisterMail($this->data['name'], $this->data['email'], $this->data['verification_code']);
+        MailController::sendRegisterMail($this->data['name'], $this->data['email'], $this->data['verification_code'], $this->data['url']);
     }
 }
