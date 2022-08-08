@@ -6,7 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use League\OAuth1\Client\Credentials\Credentials;
 
 class User extends Authenticatable
 {
@@ -46,4 +48,30 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function loginWithAccount($data) {
+        $user = User::where('email', $data['email'])->select('is_verified')->first();
+
+        $credentials = ['email' => $data['email'], 'password' => $data['password'], 'is_verified' => 1];
+
+        if(!$user) {
+            return redirect()->route('login.index')->with('error', 'Account does not exist');
+        }else {
+            if(Auth::attempt($credentials)){
+                return redirect()->route('homepage');
+            }else if($user->is_verified != 1){
+                return redirect()->route('login.index')->with('error', 'Your account is not verified');
+            }
+        }
+    }
+
+    public static function loginWithGoogle($data){
+        if(Auth::loginUsingId($data->id)){ return redirect()->route('homepage');
+        }else { return redirect()->route('login.index')->with('error', 'Something went wrong'); }
+    }
+
+    public static function loginWithFacebook($data){
+        if(Auth::loginUsingId($data->id)){ return redirect()->route('homepage');
+        }else { return redirect()->route('login.index')->with('error', 'Something went wrong'); }
+    }
 }
