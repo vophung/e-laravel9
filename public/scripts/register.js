@@ -20,6 +20,26 @@ const isEmail = (email) => regexEmail.test(String(email).toLowerCase());
 const isPassword = (password) => password.match(regexPassword) ? true : false
 const matchPassword = (password, confirm_password) => password != confirm_password ? false : true
 const emptyPassword = (password) => password === '' ? false : true 
+const duplicateEmail = function checkEmailExist(email) {
+    var res = false;
+
+    $.ajax({
+        type: "POST",
+        url: "/check-email",
+        async: false,
+        data: {
+            email : email,
+        },
+        success: function(data) {
+            data.exists ? res = true : res = false;
+        },
+        error: function(data) {
+            console.log('error');
+        }
+    });
+
+    return res;
+}
 
 const checkEmail = () => {
     let valid = false;
@@ -29,6 +49,8 @@ const checkEmail = () => {
         showError(emailEl, 'Please enter your email')
     }else if(!isEmail(email)){
         showError(emailEl, 'Please enter a valid email address')
+    }else if(duplicateEmail(email)){
+        showError(emailEl, 'Email already exists');
     }else {
         showSuccess(emailEl);
         valid = true;

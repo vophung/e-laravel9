@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Events\Registered;
 use App\Jobs\SendMailJob;
 use App\Models\User;
 use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 
 class RegisterRequest extends FormRequest
 {
@@ -58,7 +60,6 @@ class RegisterRequest extends FormRequest
     {
         if(!$validator->fails()){
             $validator->after(function($validator) {
-
                 DB::beginTransaction();
 
                 try {
@@ -69,10 +70,13 @@ class RegisterRequest extends FormRequest
                     $user->password = bcrypt($this->password);
                     $user->verification_code = sha1(time());
                     $user->save();
-    
-                    SendMailJob::dispatch(['name' => $this->name, 'email' => $this->email, 'verification_code' => $user->verification_code]);
-                    
+                                   
+                    $data = ['name'  => $user->name, 'email' => $user->email, 'verification_code' => $user->verification_code];
+
                     DB::commit();
+                    
+                    event(new Registered($data));
+
                 }catch (Exception $e){
                     DB::rollback();
 
