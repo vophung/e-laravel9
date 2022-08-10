@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
         @include('admin.blocks.head')   
+		@yield('links')
 	</head>
 	<body>
 		<div id="app">
@@ -25,5 +26,6 @@
 			</div>
 		</div>
 		@include('admin.blocks.foot')
+		@yield('scripts')
 	</body>
 </html>

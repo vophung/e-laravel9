@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -14,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.pages.category.index');
     }
 
     /**
@@ -24,7 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.pages.category.create');
     }
 
     /**
@@ -35,7 +40,25 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $category = new Category();
+            $category->title = $request->title;
+            $category->slug = Str::slug($request->title);
+            if($request->has('parent_id')) $category->parent_id = $request->parent_id;
+            $category->save();
+            
+            DB::commit();
+
+            session()->put('success', 'A new category is created');
+
+            return response()->json('Funciton executed successfully');
+        }catch (Exception $e) {
+            DB::rollback();
+
+            // return redirect()->back()->with('error', )
+        }
     }
 
     /**
@@ -57,7 +80,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('admin.pages.category.edit');
     }
 
     /**

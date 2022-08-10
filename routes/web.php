@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Auth\ForgotController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,10 @@ Route::controller(ForgotController::class)->name('password.')->group(function() 
     Route::post('/password/reset','update')->name('update');
 });
 
+Route::middleware(['checkLogin'])->group(function() {
+    Route::resource('category', CategoryController::class);
+});
+
 Route::get('/dashboard', function(){
     return view('admin.pages.dashboard.index');
 })->middleware('checkLogin')->name('dashboard');
@@ -45,10 +50,6 @@ Route::get('/dashboard', function(){
 Route::get('/trang-chu', function(){
     return view('themes.index');
 })->name('homepage');
-
-Route::get('/test', function() {
-
-});
 
 Route::get('/login/google/redirect', [SocialiteController::class, 'redirect_google'])->name('google.redirect');
 Route::get('/login/google/callback', [SocialiteController::class, 'callback_google'])->name('google.callback');

@@ -1,7 +1,10 @@
 @extends('admin.master')
+@section('links')
+@include('admin.pages.dashboard.blocks.head-sub')
+@endsection
 @section('content')
 <div class="page-heading">
-    @include('admin.pages.dashboard.blocks.page-heading')
+    <h3>asdasd</h3>
 </div>
 <div class="page-content">
     <section class="row">
@@ -276,4 +279,7 @@
         </div>
     </div>
 </footer>
+@endsection
+@section('scripts')
+@include('admin.pages.dashboard.blocks.foot-sub')
 @endsection
